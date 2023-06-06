@@ -1,6 +1,6 @@
 export type DatabaseSchema = {
-  post: Headline
-  sub_state: SubState
+  headline: Headline
+  sub_state_headlines: SubState
 }
 
 export type Headline = {

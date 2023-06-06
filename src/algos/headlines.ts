@@ -23,7 +23,7 @@ export const handler = async (ctx: AppContext, params: QueryParams) => {
     const timeStr = new Date(parseInt(indexedAt, 10)).toISOString()
     builder = builder
       .where('headline.indexedAt', '<', timeStr)
-      .orWhere((qb) => qb.where('post.indexedAt', '=', timeStr))
+      .orWhere((qb) => qb.where('headline.indexedAt', '=', timeStr))
       .where('headline.cid', '<', cid)
   }
   const res = await builder.execute()
