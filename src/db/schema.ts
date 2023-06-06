@@ -1,11 +1,12 @@
 export type DatabaseSchema = {
-  post: Post
+  post: Headline
   sub_state: SubState
 }
 
-export type Post = {
+export type Headline = {
   uri: string
   cid: string
+  author: string
   replyParent: string | null
   replyRoot: string | null
   indexedAt: string

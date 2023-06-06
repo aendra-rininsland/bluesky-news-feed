@@ -1,14 +1,16 @@
 import { InvalidRequestError } from '@atproto/xrpc-server'
 import { QueryParams } from '../lexicon/types/app/bsky/feed/getFeedSkeleton'
 import { AppContext } from '../config'
+import { ALLOWLIST } from '../allowlist'
 
 // max 15 chars
-export const shortname = 'whats-alf'
+export const shortname = 'headlines'
 
 export const handler = async (ctx: AppContext, params: QueryParams) => {
   let builder = ctx.db
-    .selectFrom('post')
+    .selectFrom('headline')
     .selectAll()
+    // .where('author', 'in', ALLOWLIST)
     .orderBy('indexedAt', 'desc')
     .orderBy('cid', 'desc')
     .limit(params.limit)
@@ -20,9 +22,9 @@ export const handler = async (ctx: AppContext, params: QueryParams) => {
     }
     const timeStr = new Date(parseInt(indexedAt, 10)).toISOString()
     builder = builder
-      .where('post.indexedAt', '<', timeStr)
+      .where('headline.indexedAt', '<', timeStr)
       .orWhere((qb) => qb.where('post.indexedAt', '=', timeStr))
-      .where('post.cid', '<', cid)
+      .where('headline.cid', '<', cid)
   }
   const res = await builder.execute()
 

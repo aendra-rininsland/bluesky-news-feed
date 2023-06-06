@@ -52,7 +52,7 @@ export abstract class FirehoseSubscriptionBase {
 
   async updateCursor(cursor: number) {
     await this.db
-      .updateTable('sub_state')
+      .updateTable('sub_state_headlines')
       .set({ cursor })
       .where('service', '=', this.service)
       .execute()
@@ -60,7 +60,7 @@ export abstract class FirehoseSubscriptionBase {
 
   async getCursor(): Promise<{ cursor?: number }> {
     const res = await this.db
-      .selectFrom('sub_state')
+      .selectFrom('sub_state_headlines')
       .selectAll()
       .where('service', '=', this.service)
       .executeTakeFirst()
