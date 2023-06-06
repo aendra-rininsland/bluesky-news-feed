@@ -13,7 +13,10 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
     const postsToCreate = ops.posts.creates
       .filter((create) => {
         // only news-related posts
-        return create.record.text.includes('📰')
+        return (
+          create.record.text.includes('📰') ||
+          create.record.text.includes('BREAKING')
+        )
       })
       .map((create) => {
         // map news-related posts to a db row
