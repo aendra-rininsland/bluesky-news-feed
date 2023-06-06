@@ -4,7 +4,7 @@ import { AppContext } from '../config'
 import { ALLOWLIST } from '../allowlist'
 
 // max 15 chars
-export const shortname = 'headlines'
+export const shortname = 'news'
 
 export const handler = async (ctx: AppContext, params: QueryParams) => {
   let builder = ctx.db
