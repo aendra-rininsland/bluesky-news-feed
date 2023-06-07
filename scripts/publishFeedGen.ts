@@ -26,7 +26,7 @@ const run = async () => {
   // (Optional) A description of your feed
   // Ex: Top trending content from the whole network
   const description =
-    'Every post with the 📰 emoji in it, in reverse chronological order. Official mute list: https://bsky.app/profile/did:plc:kkf4naxqmweop7dv4l2iqqf5/lists/3jxj5pajvqj22'
+    'Every post with the "📰" emoji or "BREAKING" (in all-caps) in it, in reverse chronological order. \nOfficial mute list: https://bsky.app/profile/did:plc:kkf4naxqmweop7dv4l2iqqf5/lists/3jxj5pajvqj22'
 
   // (Optional) The path to an image to be used as your feed's avatar
   // Ex: ~/path/to/avatar.jpeg
@@ -71,7 +71,7 @@ const run = async () => {
     avatarRef = blobRes.data.blob
   }
 
-  await agent.api.com.atproto.repo.createRecord({
+  await agent.api.com.atproto.repo.putRecord({
     repo: agent.session?.did ?? '',
     collection: ids.AppBskyFeedGenerator,
     rkey: recordName,

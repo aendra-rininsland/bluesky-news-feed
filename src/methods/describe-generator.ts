@@ -12,6 +12,7 @@ export default function (server: Server, ctx: AppContext) {
         shortname,
       ).toString(),
     }))
+
     return {
       encoding: 'application/json',
       body: {
