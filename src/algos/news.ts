@@ -1,7 +1,6 @@
 import { InvalidRequestError } from '@atproto/xrpc-server'
 import { QueryParams } from '../lexicon/types/app/bsky/feed/getFeedSkeleton'
 import { AppContext } from '../config'
-import { ALLOWLIST } from '../allowlist'
 
 // max 15 chars
 export const shortname = 'news'
@@ -10,7 +9,6 @@ export const handler = async (ctx: AppContext, params: QueryParams) => {
   let builder = ctx.db
     .selectFrom('headline')
     .selectAll()
-    // .where('author', 'in', ALLOWLIST)
     .orderBy('indexedAt', 'desc')
     .orderBy('cid', 'desc')
     .limit(params.limit)
