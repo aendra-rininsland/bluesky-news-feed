@@ -3,6 +3,7 @@ import {
   isCommit,
 } from './lexicon/types/com/atproto/sync/subscribeRepos'
 import { FirehoseSubscriptionBase, getOpsByType } from './util/subscription'
+import { VERIFIED_DIDS } from './verified'
 
 export class FirehoseSubscription extends FirehoseSubscriptionBase {
   async handleEvent(evt: RepoEvent) {
@@ -14,8 +15,10 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
       .filter((create) => {
         // only news-related posts
         return (
-          create.record.text.includes('📰') ||
-          create.record.text.includes('BREAKING')
+          create.record.embed?.external &&
+          (VERIFIED_DIDS.includes(create.author) ||
+            create.record.text.includes('📰') ||
+            create.record.text.includes('BREAKING'))
         )
       })
       .map((create) => {
