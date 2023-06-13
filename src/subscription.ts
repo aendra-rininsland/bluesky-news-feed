@@ -4,7 +4,8 @@ import {
 } from './lexicon/types/com/atproto/sync/subscribeRepos'
 import { FirehoseSubscriptionBase, getOpsByType } from './util/subscription'
 import { VERIFIED_DIDS } from './verified'
-
+import debug from 'debug'
+const log = debug('newsfeed:subscription')
 export class FirehoseSubscription extends FirehoseSubscriptionBase {
   async handleEvent(evt: RepoEvent) {
     if (!isCommit(evt)) return
@@ -40,6 +41,7 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
         .execute()
     }
     if (postsToCreate.length > 0) {
+      log(postsToCreate)
       await this.db
         .insertInto('headline')
         .values(postsToCreate)
