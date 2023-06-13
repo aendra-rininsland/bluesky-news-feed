@@ -16,9 +16,9 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
       .filter((create) => {
         // only news-related posts
         return (
-          create.record.embed?.external &&
-          (VERIFIED_DIDS.includes(create.author) ||
-            create.record.text.includes('📰') ||
+          create.record.embed
+            ?.external /*VERIFIED_DIDS.includes(create.author) ||*/ &&
+          (create.record.text.includes('📰') ||
             create.record.text.includes('BREAKING'))
         )
       })
