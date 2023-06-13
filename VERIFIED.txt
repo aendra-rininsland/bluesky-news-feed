@@ -1,4 +1,3 @@
-did:plc:kkf4naxqmweop7dv4l2iqqf5 # aendra.bsky.social (maintainer)
 did:plc:k5nskatzhyxersjilvtnz4lh # washingtonpost.com
 did:plc:uewxgchsjy4kmtu7dcxa77us # bloombergnews.bsky.social
 did:plc:wtvie5ehlynmap2njw3wykw7 # transjournalists.bsky.social

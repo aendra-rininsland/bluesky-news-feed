@@ -26,7 +26,7 @@ const run = async () => {
   // (Optional) A description of your feed
   // Ex: Top trending content from the whole network
   const description =
-    'Every post with the "📰" emoji or "BREAKING" (in all-caps) in it, in reverse chronological order. \nOfficial mute list: https://bsky.app/profile/did:plc:kkf4naxqmweop7dv4l2iqqf5/lists/3jxj5pajvqj22'
+    'Recent posts that have links and either start with the word "BREAKING:" or contain the 📰 emoji. Maintained by @aendra.bsky.social.'
 
   // (Optional) The path to an image to be used as your feed's avatar
   // Ex: ~/path/to/avatar.jpeg
