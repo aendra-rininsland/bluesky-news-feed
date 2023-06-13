@@ -19,7 +19,7 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
           create.record.embed
             ?.external /*VERIFIED_DIDS.includes(create.author) ||*/ &&
           (create.record.text.includes('📰') ||
-            create.record.text.includes('BREAKING'))
+            create.record.text.match(/^breaking:?\s/i))
         )
       })
       .map((create) => {
