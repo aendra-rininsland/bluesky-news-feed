@@ -16,10 +16,11 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
       .filter((create) => {
         // only news-related posts
         return (
-          create.record.embed?.external &&
-          (VERIFIED_DIDS.includes(create.author) ||
-            create.record.text.includes('📰') ||
-            create.record.text.match(/^breaking:?\s/i))
+          (create.record.embed?.external || // Embedded link
+            create.record.text.includes('https://')) && // Non-embedded link
+          (VERIFIED_DIDS.includes(create.author) || // Whitelisted news orgs
+            create.record.text.includes('📰') || // Newspaper Emoji
+            create.record.text.match(/^breaking:?\s/i)) // Breaking
         )
       })
       .map((create) => {
