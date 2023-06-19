@@ -30,3 +30,20 @@ migrations['001'] = {
     await db.schema.dropTable('sub_state_headlines').execute()
   },
 }
+
+migrations['002'] = {
+  async up(db: Kysely<unknown>) {
+    await db.schema
+      .createTable('chart')
+      .addColumn('uri', 'varchar', (col) => col.primaryKey())
+      .addColumn('cid', 'varchar', (col) => col.notNull())
+      .addColumn('author', 'varchar', (col) => col.notNull())
+      .addColumn('replyParent', 'varchar')
+      .addColumn('replyRoot', 'varchar')
+      .addColumn('indexedAt', 'varchar', (col) => col.notNull())
+      .execute()
+  },
+  async down(db: Kysely<unknown>) {
+    await db.schema.dropTable('chart').execute()
+  },
+}
