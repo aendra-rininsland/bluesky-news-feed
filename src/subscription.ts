@@ -17,6 +17,7 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
 
     const postsToDelete = ops.posts.deletes.map((del) => del.uri)
     const headlinesToCreate = ops.posts.creates
+      .filter((create) => !this.forbidden.news.includes(create.author))
       .filter((create) => {
         // only news-related posts
         return (
@@ -41,6 +42,7 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
 
     // only chart-posts
     const chartsToCreate = ops.posts.creates
+      .filter((create) => !this.forbidden.data.includes(create.author))
       .filter((create) => {
         // External link with thumbnail
         if (AppBskyEmbedExternal.isExternal(create.record.embed?.external)) {

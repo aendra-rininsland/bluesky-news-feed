@@ -10,12 +10,18 @@ import { FirehoseSubscription } from './subscription'
 import { AppContext, Config } from './config'
 import wellKnown from './well-known'
 
+const mutelists = {
+  data: 'at://did:plc:kkf4naxqmweop7dv4l2iqqf5/app.bsky.graph.list/3jyjmk73ifz27',
+  news: 'at://did:plc:kkf4naxqmweop7dv4l2iqqf5/app.bsky.graph.list/3jxj5pajvqj22',
+}
+
 export class FeedGenerator {
   public app: express.Application
   public server?: http.Server
   public db: Database
   public firehose: FirehoseSubscription
   public cfg: Config
+  public mutelists
 
   constructor(
     app: express.Application,
@@ -32,7 +38,11 @@ export class FeedGenerator {
   static create(cfg: Config) {
     const app = express()
     const db = createDb(cfg.sqliteLocation)
-    const firehose = new FirehoseSubscription(db, cfg.subscriptionEndpoint)
+    const firehose = new FirehoseSubscription(
+      db,
+      cfg.subscriptionEndpoint,
+      mutelists,
+    )
 
     const didCache = new MemoryCache()
     const didResolver = new DidResolver(

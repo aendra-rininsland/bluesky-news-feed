@@ -2,6 +2,7 @@ import { Subscription } from '@atproto/xrpc-server'
 import { cborToLexRecord, readCar } from '@atproto/repo'
 import { BlobRef } from '@atproto/lexicon'
 import { ids, lexicons } from '../lexicon/lexicons'
+import { BskyAgent } from '@atproto/api'
 import { Record as PostRecord } from '../lexicon/types/app/bsky/feed/post'
 import { Record as RepostRecord } from '../lexicon/types/app/bsky/feed/repost'
 import { Record as LikeRecord } from '../lexicon/types/app/bsky/feed/like'
@@ -13,10 +14,14 @@ import {
 } from '../lexicon/types/com/atproto/sync/subscribeRepos'
 import { Database } from '../db'
 
+export const agent = new BskyAgent({ service: 'https://bsky.social' })
+
 export abstract class FirehoseSubscriptionBase {
   public sub: Subscription<RepoEvent>
+  public forbidden: { data: string[]; news: string[] }
+  mutelists: { data: string; news: string }
 
-  constructor(public db: Database, public service: string) {
+  constructor(public db: Database, public service: string, mutelists: any) {
     this.sub = new Subscription({
       service: service,
       method: ids.ComAtprotoSyncSubscribeRepos,
@@ -32,11 +37,18 @@ export abstract class FirehoseSubscriptionBase {
         }
       },
     })
+    this.mutelists = mutelists
+    this.forbidden = { news: [], data: [] }
   }
 
   abstract handleEvent(evt: RepoEvent): Promise<void>
 
   async run() {
+    await agent.login({
+      identifier: 'aendra.bsky.social',
+      password: process.env.USER_PASS || '',
+    })
+
     for await (const evt of this.sub) {
       try {
         await this.handleEvent(evt)
@@ -46,6 +58,12 @@ export abstract class FirehoseSubscriptionBase {
       // update stored cursor every 20 events or so
       if (isCommit(evt) && evt.seq % 20 === 0) {
         await this.updateCursor(evt.seq)
+        this.forbidden.data = (
+          await agent.app.bsky.graph.getList({ list: this.mutelists.data })
+        ).data.items.map((d) => d.subject.did)
+        this.forbidden.news = (
+          await agent.app.bsky.graph.getList({ list: this.mutelists.news })
+        ).data.items.map((d) => d.subject.did)
       }
     }
   }
