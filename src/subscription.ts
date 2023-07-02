@@ -25,7 +25,8 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
             create.record.text.includes('https://')) && // Non-embedded link
           (VERIFIED_DIDS.includes(create.author) || // Whitelisted news orgs
             create.record.text.includes('📰') || // Newspaper Emoji
-            create.record.text.match(/^breaking:?\s/i)) // Breaking
+            create.record.text.match(/^breaking:?\s/i) || // "breaking:"
+            create.record.text.match(/#breaking(?:\s|$)/i)) // "#breaking"
         )
       })
       .map((create) => {
