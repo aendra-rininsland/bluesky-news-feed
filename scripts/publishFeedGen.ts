@@ -17,20 +17,20 @@ const run = async () => {
   // A short name for the record that will show in urls
   // Lowercase with no spaces.
   // Ex: whats-hot
-  const recordName = 'data'
+  const recordName = 'verified-news'
 
   // A display name for your feed
   // Ex: What's Hot
-  const displayName = '📈 Data'
+  const displayName = '✔️📰 News orgs'
 
   // (Optional) A description of your feed
   // Ex: Top trending content from the whole network
   const description =
-    'Data visualisation and charts. Include the 📈, 📉 or 📊 emoji in your post text to be included (must have an image or external link with thumbnail). Maintained by @aendra.bsky.social.'
+    'Headlines from verified news organisations. Maintained by @aendra.bsky.social.'
 
   // (Optional) The path to an image to be used as your feed's avatar
   // Ex: ~/path/to/avatar.jpeg
-  const avatar: string = '1F4C8_color.png'
+  const avatar: string = '1F4F0_color_verified.png'
 
   // -------------------------------------
   // NO NEED TO TOUCH ANYTHING BELOW HERE
