@@ -69,6 +69,7 @@ export class FeedGenerator {
       db,
       didResolver,
       cfg,
+      verified: firehose.verified,
     }
     feedGeneration(server, ctx)
     describeGenerator(server, ctx)

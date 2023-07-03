@@ -5,6 +5,7 @@ export type AppContext = {
   db: Database
   didResolver: DidResolver
   cfg: Config
+  verified: VerifiedList
 }
 
 export type Config = {
@@ -15,4 +16,9 @@ export type Config = {
   subscriptionEndpoint: string
   serviceDid: string
   publisherDid: string
+}
+
+export type VerifiedList = {
+  news: string[]
+  data: string[]
 }
