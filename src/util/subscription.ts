@@ -19,9 +19,16 @@ export const agent = new BskyAgent({ service: 'https://bsky.social' })
 export abstract class FirehoseSubscriptionBase {
   public sub: Subscription<RepoEvent>
   public forbidden: { data: string[]; news: string[] }
+  public verified: { data: string[]; news: string[] }
   mutelists: { data: string; news: string }
+  allowlists: { data: string; news: string }
 
-  constructor(public db: Database, public service: string, mutelists: any) {
+  constructor(
+    public db: Database,
+    public service: string,
+    mutelists: any,
+    allowlists: any,
+  ) {
     this.sub = new Subscription({
       service: service,
       method: ids.ComAtprotoSyncSubscribeRepos,
@@ -38,7 +45,9 @@ export abstract class FirehoseSubscriptionBase {
       },
     })
     this.mutelists = mutelists
+    this.allowlists = allowlists
     this.forbidden = { news: [], data: [] }
+    this.verified = { news: [], data: [] }
   }
 
   abstract handleEvent(evt: RepoEvent): Promise<void>
@@ -49,6 +58,9 @@ export abstract class FirehoseSubscriptionBase {
       password: process.env.USER_PASS || '',
     })
 
+    // Fetch initial lists
+    await this.updateLists()
+
     for await (const evt of this.sub) {
       try {
         await this.handleEvent(evt)
@@ -58,14 +70,37 @@ export abstract class FirehoseSubscriptionBase {
       // update stored cursor every 20 events or so
       if (isCommit(evt) && evt.seq % 20 === 0) {
         await this.updateCursor(evt.seq)
-        this.forbidden.data = (
-          await agent.app.bsky.graph.getList({ list: this.mutelists.data })
-        ).data.items.map((d) => d.subject.did)
-        this.forbidden.news = (
-          await agent.app.bsky.graph.getList({ list: this.mutelists.news })
-        ).data.items.map((d) => d.subject.did)
+
+        // update mute/verified lists every 1000 events
+      } else if (isCommit(evt) && evt.seq % 1000 === 0) {
+        await this.updateLists()
       }
     }
+  }
+
+  async updateLists() {
+    this.forbidden.data = (
+      await agent.app.bsky.graph.getList({ list: this.mutelists.data })
+    ).data.items.map((d) => d.subject.did)
+
+    this.forbidden.news = (
+      await agent.app.bsky.graph.getList({ list: this.mutelists.news })
+    ).data.items.map((d) => d.subject.did)
+
+    this.verified.data = (
+      await agent.app.bsky.graph.getList({
+        list: this.allowlists.data,
+      })
+    ).data.items.map((d) => d.subject.did)
+
+    this.verified.news = (
+      await agent.app.bsky.graph.getList({
+        list: this.allowlists.news,
+      })
+    ).data.items.map((d) => d.subject.did)
+
+    console.log(`Updated mutes:`, this.forbidden)
+    console.log(`Updated verifieds:`, this.verified)
   }
 
   async updateCursor(cursor: number) {

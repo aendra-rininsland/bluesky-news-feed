@@ -1,3 +1,0 @@
-did:plc:k5nskatzhyxersjilvtnz4lh # washingtonpost.com
-did:plc:uewxgchsjy4kmtu7dcxa77us # bloombergnews.bsky.social
-did:plc:wtvie5ehlynmap2njw3wykw7 # transjournalists.bsky.social

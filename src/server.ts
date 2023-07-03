@@ -15,6 +15,11 @@ const mutelists = {
   news: 'at://did:plc:kkf4naxqmweop7dv4l2iqqf5/app.bsky.graph.list/3jxj5pajvqj22',
 }
 
+const allowlists = {
+  data: 'at://did:plc:kkf4naxqmweop7dv4l2iqqf5/app.bsky.graph.list/3jzmo456b6j2t',
+  news: 'at://did:plc:kkf4naxqmweop7dv4l2iqqf5/app.bsky.graph.list/3jzmo456b6j2t',
+}
+
 export class FeedGenerator {
   public app: express.Application
   public server?: http.Server
@@ -22,6 +27,7 @@ export class FeedGenerator {
   public firehose: FirehoseSubscription
   public cfg: Config
   public mutelists
+  public allowlists
 
   constructor(
     app: express.Application,
@@ -42,6 +48,7 @@ export class FeedGenerator {
       db,
       cfg.subscriptionEndpoint,
       mutelists,
+      allowlists,
     )
 
     const didCache = new MemoryCache()

@@ -2,10 +2,8 @@ import {
   OutputSchema as RepoEvent,
   isCommit,
 } from './lexicon/types/com/atproto/sync/subscribeRepos'
-import * as AppBskyEmbedImages from './lexicon/types/app/bsky/embed/images'
 import * as AppBskyEmbedExternal from './lexicon/types/app/bsky/embed/external'
 import { FirehoseSubscriptionBase, getOpsByType } from './util/subscription'
-import { VERIFIED_DIDS } from './verified'
 import debug from 'debug'
 
 const log = debug('newsfeed:subscription')
@@ -23,7 +21,7 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
         return (
           (create.record.embed?.external || // Embedded link
             create.record.text.includes('https://')) && // Non-embedded link
-          (VERIFIED_DIDS.includes(create.author) || // Whitelisted news orgs
+          (this.verified.news.includes(create.author) || // Verified news orgs
             create.record.text.includes('📰') || // Newspaper Emoji
             create.record.text.match(/^breaking:?\s/i) || // "breaking:"
             create.record.text.match(/#breaking(?:\s|$)/i)) // "#breaking"
