@@ -72,8 +72,8 @@ export abstract class FirehoseSubscriptionBase {
         await this.updateCursor(evt.seq)
       }
 
-      // update mute/verified lists and purge old every 1000 events
-      if (isCommit(evt) && evt.seq % 1000 === 0) {
+      // update mute/verified lists and purge old every 10000 events
+      if (isCommit(evt) && evt.seq % 10000 === 0) {
         await Promise.all([this.updateLists(), this.purgeOldJournalistSkeets()])
       }
     }
