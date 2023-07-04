@@ -17,20 +17,20 @@ const run = async () => {
   // A short name for the record that will show in urls
   // Lowercase with no spaces.
   // Ex: whats-hot
-  const recordName = 'verified-news'
+  const recordName = 'journo-links'
 
   // A display name for your feed
   // Ex: What's Hot
-  const displayName = '🗞 Headlines'
+  const displayName = '🔗 Journalist Links'
 
   // (Optional) A description of your feed
   // Ex: Top trending content from the whole network
   const description =
-    'Headlines from verified news organisations. Maintained by @aendra.bsky.social.'
+    'Link posts by verifiable journalists. Maintained by @aendra.bsky.social.'
 
   // (Optional) The path to an image to be used as your feed's avatar
   // Ex: ~/path/to/avatar.jpeg
-  const avatar: string = '1F4F0_color_verified.png'
+  const avatar: string = '1F517_color.png'
 
   // -------------------------------------
   // NO NEED TO TOUCH ANYTHING BELOW HERE
@@ -71,7 +71,7 @@ const run = async () => {
     avatarRef = blobRes.data.blob
   }
 
-  await agent.api.com.atproto.repo.putRecord({
+  await agent.api.com.atproto.repo.createRecord({
     repo: agent.session?.did ?? '',
     collection: ids.AppBskyFeedGenerator,
     rkey: recordName,
