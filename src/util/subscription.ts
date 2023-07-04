@@ -70,10 +70,11 @@ export abstract class FirehoseSubscriptionBase {
       // update stored cursor every 20 events or so
       if (isCommit(evt) && evt.seq % 20 === 0) {
         await this.updateCursor(evt.seq)
+      }
 
-        // update mute/verified lists every 1000 events
-      } else if (isCommit(evt) && evt.seq % 1000 === 0) {
-        await this.updateLists()
+      // update mute/verified lists and purge old every 1000 events
+      if (isCommit(evt) && evt.seq % 1000 === 0) {
+        await Promise.all([this.updateLists(), this.purgeOldJournalistSkeets()])
       }
     }
   }
@@ -107,6 +108,20 @@ export abstract class FirehoseSubscriptionBase {
 
     console.log(`Updated mutes:`, this.forbidden)
     console.log(`Updated verifieds:`, this.verified)
+  }
+
+  async purgeOldJournalistSkeets() {
+    // Delete posts older than MAX_AGE
+    const MAX_AGE = 24 * 14 // two weeks
+    const oneHour = 60 * 60 * 1000 /* ms */
+    const timeago = new Date(
+      new Date().getTime() - MAX_AGE * oneHour,
+    ).toISOString()
+
+    await this.db
+      .deleteFrom('journalist')
+      .where('indexedAt', '<', timeago)
+      .execute()
   }
 
   async updateCursor(cursor: number) {
