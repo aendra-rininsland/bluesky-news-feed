@@ -18,6 +18,8 @@ const mutelists = {
 const allowlists = {
   data: 'at://did:plc:kkf4naxqmweop7dv4l2iqqf5/app.bsky.graph.list/3jzmo456b6j2t',
   news: 'at://did:plc:kkf4naxqmweop7dv4l2iqqf5/app.bsky.graph.list/3jzmo456b6j2t',
+  journalists:
+    'at://did:plc:kkf4naxqmweop7dv4l2iqqf5/app.bsky.graph.list/3jzmrhnxai422',
 }
 
 export class FeedGenerator {

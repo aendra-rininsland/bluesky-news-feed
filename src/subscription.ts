@@ -14,6 +14,7 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
     const ops = await getOpsByType(evt)
 
     const postsToDelete = ops.posts.deletes.map((del) => del.uri)
+
     const headlinesToCreate = ops.posts.creates
       .filter((create) => !this.forbidden.news.includes(create.author))
       .filter((create) => {
@@ -73,6 +74,25 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
         }
       })
 
+    // All skeets by journalists
+    const journalistSkeetsToCreate = ops.posts.creates
+      .filter((create) => this.verified.journalists.includes(create.author))
+      .map((create) => {
+        const hasExternal =
+          typeof create.record.embed?.external !== 'undefined' || // Embedded link
+          create.record.text.includes('https://') // Non-embedded link
+        // map news-related posts to a db row
+        return {
+          uri: create.uri,
+          cid: create.cid,
+          author: create.author,
+          replyParent: create.record?.reply?.parent.uri ?? null,
+          replyRoot: create.record?.reply?.root.uri ?? null,
+          indexedAt: new Date().toISOString(),
+          hasExternal,
+        }
+      })
+
     // Delete posts marked for deletion from database
     if (postsToDelete.length > 0) {
       await Promise.all([
@@ -81,6 +101,10 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
           .where('uri', 'in', postsToDelete)
           .execute(),
         this.db.deleteFrom('chart').where('uri', 'in', postsToDelete).execute(),
+        this.db
+          .deleteFrom('journalist')
+          .where('uri', 'in', postsToDelete)
+          .execute(),
       ])
     }
 
@@ -100,6 +124,15 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
       await this.db
         .insertInto('chart')
         .values(chartsToCreate)
+        .onConflict((oc) => oc.doNothing())
+        .execute()
+    }
+
+    if (chartsToCreate.length > 0) {
+      log(journalistSkeetsToCreate)
+      await this.db
+        .insertInto('journalist')
+        .values(journalistSkeetsToCreate)
         .onConflict((oc) => oc.doNothing())
         .execute()
     }

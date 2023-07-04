@@ -47,3 +47,21 @@ migrations['002'] = {
     await db.schema.dropTable('chart').execute()
   },
 }
+
+migrations['003'] = {
+  async up(db: Kysely<unknown>) {
+    await db.schema
+      .createTable('journalist')
+      .addColumn('uri', 'varchar', (col) => col.primaryKey())
+      .addColumn('cid', 'varchar', (col) => col.notNull())
+      .addColumn('author', 'varchar', (col) => col.notNull())
+      .addColumn('replyParent', 'varchar')
+      .addColumn('replyRoot', 'varchar')
+      .addColumn('indexedAt', 'varchar', (col) => col.notNull())
+      .addColumn('hasExternal', 'boolean')
+      .execute()
+  },
+  async down(db: Kysely<unknown>) {
+    await db.schema.dropTable('journalist').execute()
+  },
+}

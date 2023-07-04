@@ -19,9 +19,9 @@ export const agent = new BskyAgent({ service: 'https://bsky.social' })
 export abstract class FirehoseSubscriptionBase {
   public sub: Subscription<RepoEvent>
   public forbidden: { data: string[]; news: string[] }
-  public verified: { data: string[]; news: string[] }
+  public verified: { data: string[]; news: string[]; journalists: string[] }
   mutelists: { data: string; news: string }
-  allowlists: { data: string; news: string }
+  allowlists: { data: string; news: string; journalists: string }
 
   constructor(
     public db: Database,
@@ -47,7 +47,7 @@ export abstract class FirehoseSubscriptionBase {
     this.mutelists = mutelists
     this.allowlists = allowlists
     this.forbidden = { news: [], data: [] }
-    this.verified = { news: [], data: [] }
+    this.verified = { news: [], data: [], journalists: [] }
   }
 
   abstract handleEvent(evt: RepoEvent): Promise<void>
@@ -96,6 +96,12 @@ export abstract class FirehoseSubscriptionBase {
     this.verified.news = (
       await agent.app.bsky.graph.getList({
         list: this.allowlists.news,
+      })
+    ).data.items.map((d) => d.subject.did)
+
+    this.verified.journalists = (
+      await agent.app.bsky.graph.getList({
+        list: this.allowlists.journalists,
       })
     ).data.items.map((d) => d.subject.did)
 
