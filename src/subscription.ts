@@ -79,7 +79,7 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
       .filter((create) => this.verified.journalists.includes(create.author))
       .map((create) => {
         const hasExternal =
-          typeof create.record.embed?.external !== 'undefined' || // Embedded link
+          AppBskyEmbedExternal.isExternal(create.record.embed?.external) || // Embedded link
           create.record.text.includes('https://') // Non-embedded link
         // map news-related posts to a db row
         return {
@@ -128,7 +128,8 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
         .execute()
     }
 
-    if (chartsToCreate.length > 0) {
+    // Create entries in the journalist table
+    if (journalistSkeetsToCreate.length > 0) {
       log(journalistSkeetsToCreate)
       await this.db
         .insertInto('journalist')
