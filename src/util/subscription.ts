@@ -13,6 +13,9 @@ import {
   isCommit,
 } from '../lexicon/types/com/atproto/sync/subscribeRepos'
 import { Database } from '../db'
+import debug from 'debug'
+
+const log = debug('newsfeed:subscriptionBase')
 
 export const agent = new BskyAgent({ service: 'https://bsky.social' })
 
@@ -106,8 +109,8 @@ export abstract class FirehoseSubscriptionBase {
       })
     ).data.items.map((d) => d.subject.did)
 
-    console.log(`Updated mutes:`, this.forbidden)
-    console.log(`Updated verifieds:`, this.verified)
+    log(`Updated mutes:`, this.forbidden)
+    log(`Updated verifieds:`, this.verified)
   }
 
   async purgeOldJournalistSkeets() {
@@ -122,6 +125,8 @@ export abstract class FirehoseSubscriptionBase {
       .deleteFrom('journalist')
       .where('indexedAt', '<', timeago)
       .execute()
+
+    log('Purged old journo skeets')
   }
 
   async updateCursor(cursor: number) {
