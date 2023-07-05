@@ -55,12 +55,7 @@ export class FirehoseSubscription extends FirehoseSubscriptionBase {
         }
 
         // Image posts
-        return (
-          create.record.embed?.images &&
-          (create.record.text.includes('📈') || // chart emojis
-            create.record.text.includes('📉') ||
-            create.record.text.includes('📊'))
-        )
+        return create.record.embed?.images && create.record.text.includes('📊')
       })
       .map((create) => {
         // map chart-related posts to a db row
